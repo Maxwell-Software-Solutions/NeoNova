@@ -5,8 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { NeonPreview } from "@/components/NeonPreview";
-import { Download, ShoppingCart, Mail } from "lucide-react";
+import { Download, Mail } from "lucide-react";
 import { toast } from "sonner";
+import { z } from "zod";
 
 type NeonColor = "pink" | "cyan" | "amber" | "purple" | "green" | "ice";
 type NeonFont = "cursive" | "script" | "dancing" | "satisfy";
@@ -17,6 +18,7 @@ const Builder = () => {
   const [color, setColor] = useState<NeonColor>("pink");
   const [font, setFont] = useState<NeonFont>("cursive");
   const [size, setSize] = useState<NeonSize>("lg");
+  const [email, setEmail] = useState("");
 
   const colors: { value: NeonColor; label: string; hex: string }[] = [
     { value: "pink", label: "Electric Pink", hex: "#FF3EA5" },
@@ -47,11 +49,15 @@ const Builder = () => {
     toast.success("Preview downloaded! Check your downloads folder.");
   };
 
-  const handleAddToCart = () => {
-    toast.success("Added to cart! Ready to checkout.");
-  };
-
   const handleGetQuote = () => {
+    const emailSchema = z.string().email();
+    const result = emailSchema.safeParse(email);
+    
+    if (!result.success) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+    
     toast.success("Quote request sent! We'll email you within 24 hours.");
   };
 
@@ -91,7 +97,7 @@ const Builder = () => {
 
               <Card className="bg-gradient-to-br from-neon-pink/5 to-neon-cyan/5 border-neon-pink/30">
                 <CardContent className="pt-6">
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center justify-between mb-6">
                     <div>
                       <p className="text-sm text-muted-foreground">Starting from</p>
                       <p className="text-4xl font-bold text-neon-pink">${currentPrice}</p>
@@ -102,19 +108,30 @@ const Builder = () => {
                     </div>
                   </div>
                   
-                  <div className="flex flex-col gap-3">
-                    <Button variant="neon-solid" size="lg" className="w-full" onClick={handleAddToCart}>
-                      <ShoppingCart className="mr-2" />
-                      Add to Cart
-                    </Button>
-                    <div className="grid grid-cols-2 gap-3">
-                      <Button variant="neon" size="default" onClick={handleGetQuote}>
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="email" className="text-sm font-medium">
+                        Email Address *
+                      </Label>
+                      <Input 
+                        id="email"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="your@email.com"
+                        className="mt-1.5"
+                        required
+                      />
+                    </div>
+                    
+                    <div className="flex flex-col gap-3">
+                      <Button variant="neon-solid" size="lg" className="w-full" onClick={handleGetQuote}>
                         <Mail className="mr-2" />
-                        Get Quote
+                        Submit Quote Request
                       </Button>
-                      <Button variant="neon-cyan" size="default" onClick={handleDownload}>
+                      <Button variant="neon-cyan" size="default" className="w-full" onClick={handleDownload}>
                         <Download className="mr-2" />
-                        Download
+                        Download Preview
                       </Button>
                     </div>
                   </div>
