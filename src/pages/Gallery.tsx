@@ -1,5 +1,6 @@
 import { Navigation } from "@/components/Navigation";
 import { Card, CardContent } from "@/components/ui/card";
+import { useLanguage } from "@/contexts/LanguageContext";
 import gallery1 from "@/assets/gallery-1.jpg";
 import gallery2 from "@/assets/gallery-2.jpg";
 import gallery3 from "@/assets/gallery-3.jpg";
@@ -37,6 +38,8 @@ const galleryItems = [
 ];
 
 const Gallery = () => {
+  const { t } = useLanguage();
+  
   return (
     <div className="min-h-screen pb-20">
       <Navigation />
@@ -45,10 +48,10 @@ const Gallery = () => {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h1 className="text-5xl font-bold mb-4">
-              Design <span className="text-neon-amber neon-glow-amber">Gallery</span>
+              {t("gallery.title")}
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Explore stunning custom LED neon signs created for businesses, homes, and special events
+              {t("gallery.subtitle")}
             </p>
           </div>
 
@@ -78,14 +81,14 @@ const Gallery = () => {
           <Card className="bg-gradient-to-r from-neon-cyan/10 to-neon-purple/10 border-neon-cyan/30">
             <CardContent className="py-12 text-center space-y-4">
               <h2 className="text-3xl font-bold">
-                Ready to Create <span className="text-neon-cyan neon-glow-cyan">Your Own</span>?
+                {t("home.cta.title")}
               </h2>
               <p className="text-muted-foreground max-w-xl mx-auto">
-                Use our interactive builder to design a custom LED neon sign that's uniquely yours
+                {t("home.cta.subtitle")}
               </p>
               <a href="/builder">
                 <button className="inline-flex items-center justify-center gap-2 h-11 rounded-md px-8 bg-neon-cyan/10 text-neon-cyan border border-neon-cyan/30 hover:bg-neon-cyan/20 hover:shadow-[0_0_20px_rgba(24,215,255,0.3)] transition-smooth font-medium text-sm">
-                  Start Designing
+                  {t("home.cta.button")}
                 </button>
               </a>
             </CardContent>

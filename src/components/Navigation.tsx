@@ -1,9 +1,17 @@
 import { Link, useLocation } from "react-router-dom";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/contexts/LanguageContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const Navigation = () => {
   const location = useLocation();
+  const { language, setLanguage, t } = useLanguage();
   
   const isActive = (path: string) => location.pathname === path;
 
@@ -24,7 +32,7 @@ export const Navigation = () => {
               isActive("/") ? "text-neon-pink" : "text-foreground"
             }`}
           >
-            Home
+            {t("nav.home")}
           </Link>
           <Link 
             to="/builder" 
@@ -32,7 +40,7 @@ export const Navigation = () => {
               isActive("/builder") ? "text-neon-cyan" : "text-foreground"
             }`}
           >
-            Builder
+            {t("nav.builder")}
           </Link>
           <Link 
             to="/gallery" 
@@ -40,7 +48,7 @@ export const Navigation = () => {
               isActive("/gallery") ? "text-neon-amber" : "text-foreground"
             }`}
           >
-            Gallery
+            {t("nav.gallery")}
           </Link>
           <Link 
             to="/faq" 
@@ -48,7 +56,7 @@ export const Navigation = () => {
               isActive("/faq") ? "text-neon-purple" : "text-foreground"
             }`}
           >
-            FAQ
+            {t("nav.faq")}
           </Link>
           <Link 
             to="/contact" 
@@ -56,15 +64,33 @@ export const Navigation = () => {
               isActive("/contact") ? "text-neon-ice" : "text-foreground"
             }`}
           >
-            Contact
+            {t("nav.contact")}
           </Link>
         </div>
 
-        <Link to="/builder">
-          <Button variant="neon-solid" size="default">
-            Design Yours
-          </Button>
-        </Link>
+        <div className="flex items-center gap-3">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-9 w-9">
+                <Globe className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setLanguage("lt")}>
+                <span className={language === "lt" ? "font-bold" : ""}>🇱🇹 Lietuvių</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setLanguage("en")}>
+                <span className={language === "en" ? "font-bold" : ""}>🇬🇧 English</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <Link to="/builder">
+            <Button variant="neon-solid" size="default">
+              {t("home.hero.cta")}
+            </Button>
+          </Link>
+        </div>
       </div>
     </nav>
   );

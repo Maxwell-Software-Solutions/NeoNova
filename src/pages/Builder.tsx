@@ -8,12 +8,14 @@ import { NeonPreview } from "@/components/NeonPreview";
 import { Download, Mail } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type NeonColor = "pink" | "cyan" | "amber" | "purple" | "green" | "ice";
 type NeonFont = "cursive" | "script" | "dancing" | "satisfy";
 type NeonSize = "sm" | "md" | "lg" | "xl";
 
 const Builder = () => {
+  const { t } = useLanguage();
   const [text, setText] = useState("Dream Big");
   const [color, setColor] = useState<NeonColor>("pink");
   const [font, setFont] = useState<NeonFont>("cursive");
@@ -46,7 +48,7 @@ const Builder = () => {
   const currentPrice = sizes.find(s => s.value === size)?.price || 249;
 
   const handleDownload = () => {
-    toast.success("Preview downloaded! Check your downloads folder.");
+    toast.success(t("builder.toast.download"));
   };
 
   const handleGetQuote = () => {
@@ -54,11 +56,11 @@ const Builder = () => {
     const result = emailSchema.safeParse(email);
     
     if (!result.success) {
-      toast.error("Please enter a valid email address");
+      toast.error(t("builder.toast.emailError"));
       return;
     }
     
-    toast.success("Quote request sent! We'll email you within 24 hours.");
+    toast.success(t("builder.toast.quote"));
   };
 
   return (
@@ -69,10 +71,10 @@ const Builder = () => {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h1 className="text-5xl font-bold mb-4">
-              Neon Sign <span className="text-neon-cyan neon-glow-cyan">Builder</span>
+              {t("builder.title")} <span className="text-neon-cyan neon-glow-cyan">{t("nav.builder")}</span>
             </h1>
             <p className="text-xl text-muted-foreground">
-              Design your perfect custom LED neon sign in real-time
+              {t("builder.subtitle")}
             </p>
           </div>
 
@@ -81,8 +83,8 @@ const Builder = () => {
             <div className="space-y-6">
               <Card className="bg-card border-border">
                 <CardHeader>
-                  <CardTitle>Live Preview</CardTitle>
-                  <CardDescription>See your design come to life</CardDescription>
+                  <CardTitle>{t("builder.preview.title")}</CardTitle>
+                  <CardDescription>{t("builder.preview.desc")}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <NeonPreview 
@@ -99,11 +101,11 @@ const Builder = () => {
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between mb-6">
                     <div>
-                      <p className="text-sm text-muted-foreground">Starting from</p>
+                      <p className="text-sm text-muted-foreground">{t("builder.price.from")}</p>
                       <p className="text-4xl font-bold text-neon-pink">${currentPrice}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm text-muted-foreground">Size: {sizes.find(s => s.value === size)?.label}</p>
+                      <p className="text-sm text-muted-foreground">{t("builder.price.size")} {sizes.find(s => s.value === size)?.label}</p>
                       <p className="text-sm text-muted-foreground">{sizes.find(s => s.value === size)?.width}</p>
                     </div>
                   </div>
@@ -111,14 +113,14 @@ const Builder = () => {
                   <div className="space-y-4">
                     <div>
                       <Label htmlFor="email" className="text-sm font-medium">
-                        Email Address *
+                        {t("builder.email.label")} *
                       </Label>
                       <Input 
                         id="email"
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="your@email.com"
+                        placeholder={t("builder.email.placeholder")}
                         className="mt-1.5"
                         required
                       />
@@ -127,11 +129,11 @@ const Builder = () => {
                     <div className="flex flex-col gap-3">
                       <Button variant="neon-solid" size="lg" className="w-full" onClick={handleGetQuote}>
                         <Mail className="mr-2" />
-                        Submit Quote Request
+                        {t("builder.submit")}
                       </Button>
                       <Button variant="neon-cyan" size="default" className="w-full" onClick={handleDownload}>
                         <Download className="mr-2" />
-                        Download Preview
+                        {t("builder.download")}
                       </Button>
                     </div>
                   </div>
@@ -143,24 +145,24 @@ const Builder = () => {
             <div className="space-y-6">
               <Card className="bg-card border-border">
                 <CardHeader>
-                  <CardTitle>Text</CardTitle>
-                  <CardDescription>Max 25 characters</CardDescription>
+                  <CardTitle>{t("builder.text.title")}</CardTitle>
+                  <CardDescription>{t("builder.text.desc")}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Input 
                     value={text}
                     onChange={(e) => setText(e.target.value.slice(0, 25))}
-                    placeholder="Enter your text..."
+                    placeholder={t("builder.text.placeholder")}
                     className="text-lg"
                   />
-                  <p className="text-xs text-muted-foreground mt-2">{text.length}/25 characters</p>
+                  <p className="text-xs text-muted-foreground mt-2">{text.length}/25 {t("builder.text.counter")}</p>
                 </CardContent>
               </Card>
 
               <Card className="bg-card border-border">
                 <CardHeader>
-                  <CardTitle>Font Style</CardTitle>
-                  <CardDescription>Choose your cursive font</CardDescription>
+                  <CardTitle>{t("builder.font.title")}</CardTitle>
+                  <CardDescription>{t("builder.font.desc")}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-2 gap-3">
@@ -180,8 +182,8 @@ const Builder = () => {
 
               <Card className="bg-card border-border">
                 <CardHeader>
-                  <CardTitle>Color</CardTitle>
-                  <CardDescription>Pick your neon glow color</CardDescription>
+                  <CardTitle>{t("builder.color.title")}</CardTitle>
+                  <CardDescription>{t("builder.color.desc")}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-3 gap-3">
@@ -214,8 +216,8 @@ const Builder = () => {
 
               <Card className="bg-card border-border">
                 <CardHeader>
-                  <CardTitle>Size</CardTitle>
-                  <CardDescription>Select your sign dimensions</CardDescription>
+                  <CardTitle>{t("builder.size.title")}</CardTitle>
+                  <CardDescription>{t("builder.size.desc")}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">

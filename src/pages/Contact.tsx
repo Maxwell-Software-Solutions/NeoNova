@@ -7,8 +7,10 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Mail, MessageSquare, Phone } from "lucide-react";
 import { toast } from "sonner";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Contact = () => {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -18,7 +20,7 @@ const Contact = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Message sent! We'll get back to you within 24 hours.");
+    toast.success(t("contact.form.success"));
     setFormData({ name: "", email: "", subject: "", message: "" });
   };
 
@@ -37,10 +39,10 @@ const Contact = () => {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
             <h1 className="text-5xl font-bold mb-4">
-              Get in <span className="text-neon-ice neon-glow-ice">Touch</span>
+              {t("contact.title")}
             </h1>
             <p className="text-xl text-muted-foreground">
-              Have questions? We're here to help bring your neon vision to life
+              {t("contact.subtitle")}
             </p>
           </div>
 
@@ -50,8 +52,9 @@ const Contact = () => {
                 <div className="w-12 h-12 bg-neon-pink/10 rounded-full flex items-center justify-center mx-auto">
                   <Mail className="w-6 h-6 text-neon-pink" />
                 </div>
-                <h3 className="font-semibold">Email Us</h3>
+                <h3 className="font-semibold">{t("contact.email.title")}</h3>
                 <p className="text-sm text-muted-foreground">hello@neonova.com</p>
+                <p className="text-xs text-muted-foreground">{t("contact.email.desc")}</p>
               </CardContent>
             </Card>
 
@@ -60,8 +63,9 @@ const Contact = () => {
                 <div className="w-12 h-12 bg-neon-cyan/10 rounded-full flex items-center justify-center mx-auto">
                   <Phone className="w-6 h-6 text-neon-cyan" />
                 </div>
-                <h3 className="font-semibold">Call Us</h3>
-                <p className="text-sm text-muted-foreground">+1 (555) 123-4567</p>
+                <h3 className="font-semibold">{t("contact.phone.title")}</h3>
+                <p className="text-sm text-muted-foreground">+370 600 12345</p>
+                <p className="text-xs text-muted-foreground">{t("contact.phone.desc")}</p>
               </CardContent>
             </Card>
 
@@ -70,74 +74,74 @@ const Contact = () => {
                 <div className="w-12 h-12 bg-neon-amber/10 rounded-full flex items-center justify-center mx-auto">
                   <MessageSquare className="w-6 h-6 text-neon-amber" />
                 </div>
-                <h3 className="font-semibold">Live Chat</h3>
-                <p className="text-sm text-muted-foreground">Available Mon-Fri, 9am-6pm EST</p>
+                <h3 className="font-semibold">{t("contact.chat.title")}</h3>
+                <p className="text-sm text-muted-foreground">{t("contact.chat.desc")}</p>
               </CardContent>
             </Card>
           </div>
 
           <Card className="bg-card border-border">
             <CardHeader>
-              <CardTitle className="text-2xl">Send us a message</CardTitle>
+              <CardTitle className="text-2xl">{t("contact.form.title")}</CardTitle>
               <CardDescription>
-                Fill out the form below and we'll respond within 24 hours
+                {t("contact.form.desc")}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="name">Name</Label>
+                    <Label htmlFor="name">{t("contact.form.name")}</Label>
                     <Input 
                       id="name"
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
-                      placeholder="Your name"
+                      placeholder={t("contact.form.namePlaceholder")}
                       required
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="email">{t("contact.form.email")}</Label>
                     <Input 
                       id="email"
                       name="email"
                       type="email"
                       value={formData.email}
                       onChange={handleChange}
-                      placeholder="your@email.com"
+                      placeholder={t("contact.form.emailPlaceholder")}
                       required
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="subject">Subject</Label>
+                  <Label htmlFor="subject">{t("contact.form.message")}</Label>
                   <Input 
                     id="subject"
                     name="subject"
                     value={formData.subject}
                     onChange={handleChange}
-                    placeholder="What's this about?"
+                    placeholder={t("contact.form.messagePlaceholder")}
                     required
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="message">Message</Label>
+                  <Label htmlFor="message">{t("contact.form.message")}</Label>
                   <Textarea 
                     id="message"
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
-                    placeholder="Tell us more about your project or question..."
+                    placeholder={t("contact.form.messagePlaceholder")}
                     rows={6}
                     required
                   />
                 </div>
 
                 <Button type="submit" variant="neon-solid" size="lg" className="w-full md:w-auto">
-                  Send Message
+                  {t("contact.form.submit")}
                 </Button>
               </form>
             </CardContent>

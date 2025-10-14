@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Navigation } from "@/components/Navigation";
 import { Zap, Shield, Sparkles, Clock } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import heroImage from "@/assets/hero-neon.jpg";
 import gallery1 from "@/assets/gallery-1.jpg";
 import gallery2 from "@/assets/gallery-2.jpg";
@@ -10,6 +11,8 @@ import gallery3 from "@/assets/gallery-3.jpg";
 import gallery4 from "@/assets/gallery-4.jpg";
 
 const Home = () => {
+  const { t } = useLanguage();
+  
   return (
     <div className="min-h-screen">
       <Navigation />
@@ -21,23 +24,20 @@ const Home = () => {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">
               <h1 className="text-5xl lg:text-7xl font-bold leading-tight">
-                Custom LED Neon,
-                <span className="block text-neon-pink neon-glow-pink">
-                  Crafted to Shine.
-                </span>
+                {t("home.hero.title")}
               </h1>
               <p className="text-xl text-muted-foreground max-w-lg">
-                Design your sign in seconds — premium materials, low energy, long life.
+                {t("home.hero.subtitle")}
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link to="/builder">
                   <Button variant="neon-solid" size="xl">
-                    Design Yours
+                    {t("home.hero.cta")}
                   </Button>
                 </Link>
                 <Link to="/gallery">
                   <Button variant="neon" size="xl">
-                    View Gallery
+                    {t("home.gallery.cta")}
                   </Button>
                 </Link>
               </div>
@@ -57,7 +57,7 @@ const Home = () => {
       <section className="py-20 bg-card/30">
         <div className="container mx-auto px-6">
           <h2 className="text-4xl font-bold text-center mb-16">
-            How It <span className="text-neon-cyan neon-glow-cyan">Works</span>
+            {t("home.howItWorks.title")}
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
             <Card className="bg-card/50 border-border">
@@ -65,9 +65,9 @@ const Home = () => {
                 <div className="w-16 h-16 bg-neon-pink/10 rounded-full flex items-center justify-center mx-auto">
                   <Sparkles className="w-8 h-8 text-neon-pink" />
                 </div>
-                <h3 className="text-2xl font-semibold">1. Design</h3>
+                <h3 className="text-2xl font-semibold">{t("home.howItWorks.step1.title")}</h3>
                 <p className="text-muted-foreground">
-                  Use our interactive builder to create your perfect sign. Choose fonts, colors, and size.
+                  {t("home.howItWorks.step1.desc")}
                 </p>
               </CardContent>
             </Card>
@@ -77,9 +77,9 @@ const Home = () => {
                 <div className="w-16 h-16 bg-neon-cyan/10 rounded-full flex items-center justify-center mx-auto">
                   <Zap className="w-8 h-8 text-neon-cyan" />
                 </div>
-                <h3 className="text-2xl font-semibold">2. Craft</h3>
+                <h3 className="text-2xl font-semibold">{t("home.howItWorks.step2.title")}</h3>
                 <p className="text-muted-foreground">
-                  Our expert team handcrafts your LED neon sign with premium, energy-efficient materials.
+                  {t("home.howItWorks.step2.desc")}
                 </p>
               </CardContent>
             </Card>
@@ -89,9 +89,9 @@ const Home = () => {
                 <div className="w-16 h-16 bg-neon-amber/10 rounded-full flex items-center justify-center mx-auto">
                   <Shield className="w-8 h-8 text-neon-amber" />
                 </div>
-                <h3 className="text-2xl font-semibold">3. Deliver</h3>
+                <h3 className="text-2xl font-semibold">{t("home.howItWorks.step3.title")}</h3>
                 <p className="text-muted-foreground">
-                  Fast, secure shipping with 2-year warranty. Ready to hang and illuminate your space.
+                  {t("home.howItWorks.step3.desc")}
                 </p>
               </CardContent>
             </Card>
@@ -103,38 +103,38 @@ const Home = () => {
       <section className="py-20">
         <div className="container mx-auto px-6">
           <h2 className="text-4xl font-bold text-center mb-16">
-            Why Choose <span className="text-neon-purple neon-glow-purple">NeoNova</span>
+            {t("home.benefits.title")}
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card className="bg-card border-border hover:border-neon-pink/50 transition-smooth">
               <CardContent className="pt-6 space-y-2">
                 <Zap className="w-8 h-8 text-neon-pink mb-2" />
-                <h3 className="font-semibold">Low Heat, Long Life</h3>
-                <p className="text-sm text-muted-foreground">12V low-voltage, safe to touch. 50,000+ hours lifespan.</p>
+                <h3 className="font-semibold">{t("home.benefits.benefit1.title")}</h3>
+                <p className="text-sm text-muted-foreground">{t("home.benefits.benefit1.desc")}</p>
               </CardContent>
             </Card>
 
             <Card className="bg-card border-border hover:border-neon-cyan/50 transition-smooth">
               <CardContent className="pt-6 space-y-2">
-                <Shield className="w-8 h-8 text-neon-cyan mb-2" />
-                <h3 className="font-semibold">Indoor & Outdoor</h3>
-                <p className="text-sm text-muted-foreground">Weather-resistant options for any location.</p>
+                <Clock className="w-8 h-8 text-neon-cyan mb-2" />
+                <h3 className="font-semibold">{t("home.benefits.benefit2.title")}</h3>
+                <p className="text-sm text-muted-foreground">{t("home.benefits.benefit2.desc")}</p>
               </CardContent>
             </Card>
 
             <Card className="bg-card border-border hover:border-neon-amber/50 transition-smooth">
               <CardContent className="pt-6 space-y-2">
-                <Clock className="w-8 h-8 text-neon-amber mb-2" />
-                <h3 className="font-semibold">Fast Lead Times</h3>
-                <p className="text-sm text-muted-foreground">Most orders ship within 7-10 business days.</p>
+                <Shield className="w-8 h-8 text-neon-amber mb-2" />
+                <h3 className="font-semibold">{t("home.benefits.benefit3.title")}</h3>
+                <p className="text-sm text-muted-foreground">{t("home.benefits.benefit3.desc")}</p>
               </CardContent>
             </Card>
 
             <Card className="bg-card border-border hover:border-neon-purple/50 transition-smooth">
               <CardContent className="pt-6 space-y-2">
                 <Sparkles className="w-8 h-8 text-neon-purple mb-2" />
-                <h3 className="font-semibold">2-Year Warranty</h3>
-                <p className="text-sm text-muted-foreground">Guaranteed quality with full support.</p>
+                <h3 className="font-semibold">{t("home.benefits.benefit4.title")}</h3>
+                <p className="text-sm text-muted-foreground">{t("home.benefits.benefit4.desc")}</p>
               </CardContent>
             </Card>
           </div>
@@ -146,9 +146,9 @@ const Home = () => {
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4">
-              Featured <span className="text-neon-amber neon-glow-amber">Designs</span>
+              {t("home.gallery.title")}
             </h2>
-            <p className="text-muted-foreground">See what's possible with custom LED neon</p>
+            <p className="text-muted-foreground">{t("gallery.subtitle")}</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             <div className="group relative overflow-hidden rounded-xl">
@@ -167,7 +167,7 @@ const Home = () => {
           <div className="text-center">
             <Link to="/gallery">
               <Button variant="neon-cyan" size="lg">
-                View Full Gallery
+                {t("home.gallery.cta")}
               </Button>
             </Link>
           </div>
@@ -180,14 +180,14 @@ const Home = () => {
           <Card className="bg-gradient-to-r from-neon-pink/10 to-neon-cyan/10 border-neon-pink/30">
             <CardContent className="py-16 text-center space-y-6">
               <h2 className="text-4xl lg:text-5xl font-bold">
-                Ready to <span className="text-neon-pink neon-glow-pink">Design</span> Yours?
+                {t("home.cta.title")}
               </h2>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Create a stunning custom LED neon sign in minutes with our interactive builder
+                {t("home.cta.subtitle")}
               </p>
               <Link to="/builder">
                 <Button variant="neon-solid" size="xl">
-                  Start Designing
+                  {t("home.cta.button")}
                 </Button>
               </Link>
             </CardContent>
@@ -207,8 +207,8 @@ const Home = () => {
               © 2025 NeoNova. All rights reserved.
             </p>
             <div className="flex gap-6 text-sm">
-              <Link to="/faq" className="hover:text-neon-pink transition-smooth">FAQ</Link>
-              <Link to="/contact" className="hover:text-neon-cyan transition-smooth">Contact</Link>
+              <Link to="/faq" className="hover:text-neon-pink transition-smooth">{t("nav.faq")}</Link>
+              <Link to="/contact" className="hover:text-neon-cyan transition-smooth">{t("nav.contact")}</Link>
             </div>
           </div>
         </div>
