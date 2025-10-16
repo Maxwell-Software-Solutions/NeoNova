@@ -77,10 +77,10 @@ export const Navigation = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => setLanguage("lt")}>
-                <span className={language === "lt" ? "font-bold" : ""}>🇱🇹 Lietuvių</span>
+                <span className={language === "lt" ? "font-bold" : ""}>Lietuvių</span>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setLanguage("en")}>
-                <span className={language === "en" ? "font-bold" : ""}>🇬🇧 English</span>
+                <span className={language === "en" ? "font-bold" : ""}>English</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
