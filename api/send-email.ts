@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import nodemailer from 'nodemailer';
+import { MailerSend, EmailParams, Sender, Recipient } from 'mailersend';
 
 interface EmailRequestBody {
   type: 'contact' | 'quote';
@@ -28,18 +28,28 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Validate required fields
     if (!data.name || !data.email || !data.type) {
       return res.status(400).json({ error: 'Missing required fields' });
+    } else {
+      return res.status(400).json({ error: 'Unsupported email type' });
     }
 
-    // Create transporter
-    const transporter = nodemailer.createTransport({
-      host: process.env.VITE_SMTP_HOST,
-      port: parseInt(process.env.VITE_SMTP_PORT || '587'),
-      secure: false,
-      auth: {
-        user: process.env.VITE_SMTP_USER,
-        pass: process.env.VITE_SMTP_PASS,
-      },
-    });
+    const mailersendApiKey = process.env.MAILERSEND_API_KEY;
+    const fromEmail = process.env.MAILERSEND_FROM_EMAIL;
+    const fromName = process.env.MAILERSEND_FROM_NAME || 'NeoNova Website';
+
+    const missingEnv = [
+      ['MAILERSEND_API_KEY', mailersendApiKey],
+      ['MAILERSEND_FROM_EMAIL', fromEmail],
+    ]
+      .filter(([, value]) => !value)
+      .map(([key]) => key);
+
+    if (missingEnv.length > 0) {
+      console.error('Email configuration error: missing env variables', missingEnv);
+      return res.status(500).json({ error: 'Email service not configured' });
+    }
+
+    const mailerSend = new MailerSend({ apiKey: mailersendApiKey });
+    const sentFrom = new Sender(fromEmail!, fromName);
 
     const adminEmail = process.env.VITE_ADMIN_EMAIL || 'admin@maxwellsoftwaresolutions.com';
 
@@ -82,6 +92,7 @@ Message:
 ${data.message}
       `;
     } else if (data.type === 'quote' && data.quoteDetails) {
+      const quoteDetails = data.quoteDetails!;
       emailSubject = `NeoNova Quote Request from ${data.name}`;
       htmlContent = `
         <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f5f5f5;">
@@ -95,19 +106,19 @@ ${data.message}
             </div>
             <h3 style="color: #333; margin-top: 30px; margin-bottom: 15px;">Design Details</h3>
             <div style="margin-bottom: 10px;">
-              <strong>Text:</strong> ${data.quoteDetails.text}
+              <strong>Text:</strong> ${quoteDetails.text}
             </div>
             <div style="margin-bottom: 10px;">
-              <strong>Color:</strong> ${data.quoteDetails.color}
+              <strong>Color:</strong> ${quoteDetails.color}
             </div>
             <div style="margin-bottom: 10px;">
-              <strong>Font:</strong> ${data.quoteDetails.font}
+              <strong>Font:</strong> ${quoteDetails.font}
             </div>
             <div style="margin-bottom: 10px;">
-              <strong>Size:</strong> ${data.quoteDetails.size}
+              <strong>Size:</strong> ${quoteDetails.size}
             </div>
             <div style="margin-top: 20px; padding: 15px; background-color: #f0f0f0; border-radius: 5px;">
-              <strong>Estimated Price:</strong> <span style="font-size: 24px; color: #FF3EA5;">€${data.quoteDetails.price}</span>
+              <strong>Estimated Price:</strong> <span style="font-size: 24px; color: #FF3EA5;">€${quoteDetails.price}</span>
             </div>
           </div>
         </div>
@@ -119,26 +130,38 @@ Name: ${data.name}
 Email: ${data.email}
 
 Design Details:
-Text: ${data.quoteDetails.text}
-Color: ${data.quoteDetails.color}
-Font: ${data.quoteDetails.font}
-Size: ${data.quoteDetails.size}
-Estimated Price: €${data.quoteDetails.price}
+Text: ${quoteDetails.text}
+Color: ${quoteDetails.color}
+Font: ${quoteDetails.font}
+Size: ${quoteDetails.size}
+Estimated Price: €${quoteDetails.price}
       `;
+    } else {
+      return res.status(400).json({ error: 'Unsupported email type' });
     }
 
-    await transporter.sendMail({
-      from: `"NeoNova Website" <${process.env.VITE_SMTP_USER}>`,
-      to: adminEmail,
-      replyTo: data.email,
-      subject: emailSubject,
-      text: textContent,
-      html: htmlContent,
-    });
+    const recipients = [new Recipient(adminEmail, 'NeoNova Admin')];
+
+    const replyToName = data.name?.trim() || data.email;
+
+    const emailParams = new EmailParams()
+      .setFrom(sentFrom)
+      .setTo(recipients)
+      .setReplyTo(new Sender(data.email, replyToName))
+      .setSubject(emailSubject)
+      .setHtml(htmlContent)
+      .setText(textContent);
+
+    await mailerSend.email.send(emailParams);
 
     return res.status(200).json({ success: true, message: 'Email sent successfully' });
   } catch (error) {
-    console.error('Error sending email:', error);
+    if (error instanceof Error) {
+      console.error('Error sending email:', error.message, error.stack);
+    } else {
+      console.error('Error sending email:', error);
+    }
+
     return res.status(500).json({ error: 'Failed to send email' });
   }
 }

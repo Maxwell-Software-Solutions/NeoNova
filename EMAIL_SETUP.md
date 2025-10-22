@@ -1,16 +1,18 @@
 # Email Configuration Guide
 
 ## Overview
-The NeoNova website now includes email functionality for both the Contact form and Builder quote requests. Emails are sent to `admin@maxwellsoftwaresolutions.com` using MailerSend SMTP service.
+The NeoNova website now includes email functionality for both the Contact form and Builder quote requests. Emails are sent to `admin@maxwellsoftwaresolutions.com` using the official MailerSend transactional email API.
 
 ## Architecture
 
 ### Backend (Vercel Serverless Function)
+
 - **Location:** `api/send-email.ts`
-- **Function:** Handles email sending via nodemailer
+- **Function:** Handles email sending via MailerSend SDK
 - **Endpoint:** `POST /api/send-email`
 
 ### Frontend Integration
+
 - **Contact Form:** `src/pages/Contact.tsx`
 - **Builder Quote Form:** `src/pages/Builder.tsx`
 
@@ -19,45 +21,55 @@ The NeoNova website now includes email functionality for both the Contact form a
 Required environment variables in `.env`:
 
 ```env
-VITE_SMTP_HOST=smtp.mailersend.net
-VITE_SMTP_PORT=587
-VITE_SMTP_USER=MS_B5JJBp@test-z0vklo6prypl7qrx.mlsender.net
-VITE_SMTP_PASS=mssp.MAI4cFO.zr6ke4n03v9lon12.X8tzTw5
+MAILERSEND_API_KEY=your_mailersend_api_key
+MAILERSEND_FROM_EMAIL=hello@neonova.company
+MAILERSEND_FROM_NAME=NeoNova Website
 VITE_ADMIN_EMAIL=admin@maxwellsoftwaresolutions.com
 ```
+
+Ensure that `MAILERSEND_FROM_EMAIL` matches a verified sender domain in MailerSend; otherwise requests will be rejected.
 
 **Note:** The `.env` file is gitignored. Use `.env.example` as a template.
 
 ## Deployment
 
 ### Vercel Deployment
+
 1. Add environment variables in Vercel dashboard:
    - Go to Project Settings > Environment Variables
-   - Add all `VITE_*` variables from `.env`
+   - Add `MAILERSEND_API_KEY`, `MAILERSEND_FROM_EMAIL`, `MAILERSEND_FROM_NAME`, and `VITE_ADMIN_EMAIL`
 
 2. Deploy:
+
    ```bash
    git push origin main
    ```
+
    Vercel will automatically deploy the serverless function.
 
 ### Local Testing
+
 ```bash
 npm run dev
 ```
+
 Note: Email sending requires the API endpoint to be available. For local testing with serverless functions, use `vercel dev` instead of `npm run dev`.
 
 ## Email Types
 
 ### 1. Contact Form Email
+
 Sent when users submit the contact form with:
+
 - Name
 - Email
 - Subject
 - Message
 
 ### 2. Quote Request Email
+
 Sent when users request a quote from the Builder with:
+
 - Customer email
 - Design details (text, color, font, size)
 - Estimated price
@@ -87,6 +99,7 @@ Content-Type: application/json
 ## Response Format
 
 ### Success
+
 ```json
 {
   "success": true,
@@ -95,6 +108,7 @@ Content-Type: application/json
 ```
 
 ### Error
+
 ```json
 {
   "error": "Error message"
@@ -115,7 +129,7 @@ Content-Type: application/json
 
 3. **Authentication errors:**
    - Verify MailerSend credentials are correct
-   - Check if the SMTP password hasn't expired
+   - Confirm the API token has the “Sending emails” scope enabled
 
 4. **Emails going to spam:**
    - Verify domain authentication in MailerSend
