@@ -23,13 +23,34 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const data: EmailRequestBody = req.body;
+    let parsedBody: unknown = req.body;
+
+    if (typeof parsedBody === 'string') {
+      try {
+        parsedBody = JSON.parse(parsedBody);
+      } catch (jsonError) {
+        console.warn('Invalid JSON payload received', jsonError);
+        return res.status(400).json({ error: 'Invalid JSON payload' });
+      }
+    }
+
+    if (!parsedBody || typeof parsedBody !== 'object') {
+      return res.status(400).json({ error: 'Invalid request payload' });
+    }
+
+    const data = parsedBody as EmailRequestBody;
 
     // Validate required fields
     if (!data.name || !data.email || !data.type) {
       return res.status(400).json({ error: 'Missing required fields' });
-    } else {
-      return res.status(400).json({ error: 'Unsupported email type' });
+    }
+
+    if (data.type === 'contact' && !data.message) {
+      return res.status(400).json({ error: 'Missing contact message' });
+    }
+
+    if (data.type === 'quote' && !data.quoteDetails) {
+      return res.status(400).json({ error: 'Missing quote details' });
     }
 
     const mailersendApiKey = process.env.MAILERSEND_API_KEY;
@@ -48,7 +69,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(500).json({ error: 'Email service not configured' });
     }
 
-    const mailerSend = new MailerSend({ apiKey: mailersendApiKey });
+    const mailerSend = new MailerSend({ apiKey: mailersendApiKey! });
     const sentFrom = new Sender(fromEmail!, fromName);
 
     const adminEmail = process.env.VITE_ADMIN_EMAIL || 'admin@maxwellsoftwaresolutions.com';
